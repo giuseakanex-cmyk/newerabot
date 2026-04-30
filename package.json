@@ -36,9 +36,9 @@
     "media": "media"
   },
   "scripts": {
-    "start": "node based.js",
-    "code": "node based.js code",
-    "qr": "node based.js qr"
+    "start": "node princ.js",
+    "code": "node princ.js code",
+    "qr": "node princ.js qr"
   },
   "dependencies": {
     "@realvare/baileys": "latest",
