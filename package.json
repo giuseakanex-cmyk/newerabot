@@ -26,7 +26,7 @@
     "based",
     "baileys",
     "whatsapp-bot",
-    "legambot",
+    "newetabot",
     "@realvare/based",
     "@realvare/baileys"
   ],
@@ -44,7 +44,6 @@
     "@realvare/baileys": "latest",
     "awesome-phonenumber": "^3.4.0",
     "axios": "^1.12.2",
-    "canvas": "^3.2.0",
     "chalk": "^5.6.2",
     "cheerio": "^1.1.2",
     "file-type": "^21.0.0",
