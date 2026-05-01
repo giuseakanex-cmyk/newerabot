@@ -1,3 +1,4 @@
+
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text, command, isOwner, isAdmin }) => {
@@ -18,13 +19,13 @@ let handler = async (m, { conn, text, command, isOwner, isAdmin }) => {
     }
 
     if (!hasPower) {
-        return m.reply("*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System_\n───────────────\n⚠️ Accesso negato: Permessi di Amministratore richiesti.");
+        return m.reply("*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System_\n───────────────\n⚠️ Accesso negato: Solo lo Staff può eseguire questa azione.");
     }
 
     // 🔥 CONTROLLO ANTINUKE & GERARCHIA
     const chat = global.db.data.chats[m.chat] || {};
     if (chat.antinuke && !isOwner) {
-        let deniedMsg = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Security Override_\n───────────────\n🛡️ *Stato:* Antinuke Attivo\n⚠️ *Blocco:* Le modifiche gerarchiche sono bloccate. Solo l'Owner può intervenire.\n───────────────\n_action rejected_`;
+        let deniedMsg = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Security Override_\n───────────────\n🛡️ *Stato:* Antinuke Attivo\n⚠️ *Blocco:* Le modifiche gerarchiche sono bloccate. Solo l'Owner può intervenire.`;
         return m.reply(deniedMsg);
     }
 
@@ -50,7 +51,7 @@ let handler = async (m, { conn, text, command, isOwner, isAdmin }) => {
 };
 
 // =========================================================
-// 2. L'INTERCETTATORE GLOBALE (Evento Gerarchia)
+// L'INTERCETTATORE GLOBALE (Banner Visivo con AdReply)
 // =========================================================
 handler.before = async function (m, { conn }) {
     if (!m.isGroup || !m.messageStubType) return true;
@@ -67,23 +68,21 @@ handler.before = async function (m, { conn }) {
     const chat = global.db.data.chats[m.chat] || {};
     let isExecutorOwner = executorNum === botNum || (global.owner && global.owner.some(o => getNum(o[0]) === executorNum));
     
-    if (chat.antinuke && !isExecutorOwner) return true; 
+    if (chat.antinuke && !isExecutorOwner) return true;
 
     let promotedUsername = getNum(targetUser);
     let senderUsername = executorNum;
 
-    let actionTitle = isPromote ? '👑 *PROMOZIONE*' : '🔻 *RETROCESSIONE*';
-    let actionDesc = isPromote 
-        ? `• L'utente @${promotedUsername} è stato nominato Amministratore.` 
-        : `• I privilegi di @${promotedUsername} sono stati revocati.`;
+    // Testi del Fake Quote (AdReply)
+    let titleStr = isPromote ? '👑 𝐏𝐑𝐎𝐌𝐎𝐙𝐈𝐎𝐍𝐄' : '🔻 𝐑𝐄𝐓𝐑𝐎𝐂𝐄𝐒𝐒𝐈𝐎𝐍𝐄';
+    let actionTxt = isPromote ? 'Nominato Amministratore' : 'Privilegi Revocati';
 
     let finalMessage = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Hierarchy Update_
 ───────────────
-${actionTitle}
-${actionDesc}
-• Eseguito da: @${senderUsername}
-───────────────
-_system updated_`.trim();
+• *Utente:* @${promotedUsername}
+• *Azione:* ${actionTxt}
+• *Eseguito da:* @${senderUsername}
+───────────────`.trim();
 
     let profilePicture;
     try { profilePicture = await conn.profilePictureUrl(targetUser, 'image'); } 
@@ -95,19 +94,21 @@ _system updated_`.trim();
     };
     let imageBuffer = await getBuffer(profilePicture);
 
-    if (imageBuffer) {
-        // Invia immagine pura + Testo minimal, NO ContextInfo
-        await conn.sendMessage(m.chat, {
-            image: imageBuffer,
-            caption: finalMessage,
-            mentions: [targetUser, executor]
-        });
-    } else {
-        await conn.sendMessage(m.chat, {
-            text: finalMessage,
-            mentions: [targetUser, executor]
-        });
-    }
+    // Invio con Fake Quote (mini-immagine sfocata a lato) e senza Inoltro
+    await conn.sendMessage(m.chat, {
+        text: finalMessage,
+        contextInfo: {
+            mentionedJid: [targetUser, executor], 
+            externalAdReply: {
+                title: titleStr,
+                body: '𝐍𝐄𝐖 𝐄𝐑𝐀 • 𝐒𝐲𝐬𝐭𝐞𝐦',
+                thumbnail: imageBuffer,
+                sourceUrl: '', // Nessun link da cliccare
+                mediaType: 1,  // 1 = Miniatura piccola a lato
+                renderLargerThumbnail: false // Forza l'immagine piccola e non il banner espanso
+            }
+        }
+    });
     return true;
 };
 
