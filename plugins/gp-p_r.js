@@ -51,7 +51,7 @@ let handler = async (m, { conn, text, command, isOwner, isAdmin }) => {
 };
 
 // =========================================================
-// L'INTERCETTATORE GLOBALE (Banner Visivo con AdReply)
+// L'INTERCETTATORE GLOBALE (Banner Visivo con AdReply & Newsletter)
 // =========================================================
 handler.before = async function (m, { conn }) {
     if (!m.isGroup || !m.messageStubType) return true;
@@ -73,7 +73,6 @@ handler.before = async function (m, { conn }) {
     let promotedUsername = getNum(targetUser);
     let senderUsername = executorNum;
 
-    // Testi del Fake Quote (AdReply)
     let titleStr = isPromote ? '👑 𝐏𝐑𝐎𝐌𝐎𝐙𝐈𝐎𝐍𝐄' : '🔻 𝐑𝐄𝐓𝐑𝐎𝐂𝐄𝐒𝐒𝐈𝐎𝐍𝐄';
     let actionTxt = isPromote ? 'Nominato Amministratore' : 'Privilegi Revocati';
 
@@ -94,18 +93,25 @@ handler.before = async function (m, { conn }) {
     };
     let imageBuffer = await getBuffer(profilePicture);
 
-    // Invio con Fake Quote (mini-immagine sfocata a lato) e senza Inoltro
+    // Invio con Fake Quote, Inoltro Newsletter Fake
     await conn.sendMessage(m.chat, {
         text: finalMessage,
         contextInfo: {
             mentionedJid: [targetUser, executor], 
+            isForwarded: true,
+            forwardingScore: 999,
+            forwardedNewsletterMessageInfo: {
+                newsletterJid: '120363233544482011@newsletter', 
+                serverMessageId: 100,
+                newsletterName: "🛡️ 𝐍𝐄𝐖 𝐄𝐑𝐀 • 𝐒𝐞𝐜𝐮𝐫𝐢𝐭𝐲"
+            },
             externalAdReply: {
                 title: titleStr,
                 body: '𝐍𝐄𝐖 𝐄𝐑𝐀 • 𝐒𝐲𝐬𝐭𝐞𝐦',
                 thumbnail: imageBuffer,
-                sourceUrl: '', // Nessun link da cliccare
-                mediaType: 1,  // 1 = Miniatura piccola a lato
-                renderLargerThumbnail: false // Forza l'immagine piccola e non il banner espanso
+                sourceUrl: '', 
+                mediaType: 1,  
+                renderLargerThumbnail: false 
             }
         }
     });
