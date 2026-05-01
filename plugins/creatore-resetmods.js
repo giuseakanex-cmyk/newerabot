@@ -1,62 +1,50 @@
-let handler = async (m, { conn }) => {
-    if (!m.isGroup) return m.reply('『 ⚠️ 』 \`Questo comando funziona solo nei gruppi.\`');
 
-    // Reazione di caricamento
-    await conn.sendMessage(m.chat, { react: { text: '⚙️', key: m.key } });
+let handler = async (m, { conn }) => {
+    if (!m.isGroup) return m.reply('⚠️ Questo comando è utilizzabile solo all\'interno di un gruppo.');
+
+    // Reazione di elaborazione sistema
+    await conn.sendMessage(m.chat, { react: { text: '⚡', key: m.key } });
 
     const users = global.db.data.users || {};
     let removedCount = 0;
 
-    // Scansiona tutti gli utenti per trovare i Moderatori di questo gruppo
+    // Scansione database utenti per il gruppo corrente
     for (let jid in users) {
         let user = users[jid];
-        // Se è un Moderatore (Premium) in questo specifico gruppo...
+        // Rimozione permessi premium/staff legati a questo specifico chat ID
         if (user && user.premium === true && user.premiumGroup === m.chat) {
-            // ...Gli rimuove i poteri
             user.premium = false;
             user.premiumGroup = '';
             removedCount++;
         }
     }
 
-    // Se non c'erano moderatori
     if (removedCount === 0) {
-        return m.reply('『 🛑 』 \`Nessun membro dello Staff / Prescelto rilevato in questo gruppo da rimuovere.\`');
+        return m.reply('*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System_\n───────────────\nNessun profilo Staff rilevato in questo database di gruppo.');
     }
 
-    // Messaggio di successo in stile Legam OS
-    let caption = `
-✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦
-· 𝐋 𝐄 𝐆 𝐀 𝐌  𝐒 𝐓 𝐀 𝐅 𝐅 ·
-✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦
+    // Estetica New Era: Pulita e Autoritaria
+    let caption = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Authority Reset_
+───────────────
 
-『 🗑️ 』 𝐑 𝐄 𝐒 𝐄 𝐓  𝐂 𝐎 𝐌 𝐏 𝐋 𝐄 𝐓 𝐀 𝐓 𝐎
-➤ Rimossi con successo *${removedCount}* moderatori.
-➤ Tutti i poteri di Staff sono stati revocati.
+*OPERAZIONE COMPLETATA*
+• Staff rimossi: *${removedCount}*
+• Privilegi revocati: *Totale*
 
-👑 𝐎𝐖𝐍𝐄𝐑 ➤ 𝐆𝐈𝐔𝐒𝚵
-✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦`.trim();
+_Il sistema ha aggiornato i permessi del gruppo._
+───────────────
+*ROOT ACCESS GRANTED*`.trim();
 
-    // Invia con l'estetica Premium del Legam OS
     await conn.sendMessage(m.chat, {
         text: caption,
-        contextInfo: {
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363233544482011@newsletter',
-                newsletterName: "🛡️ 𝐋𝐞𝐠𝐚𝐦 𝐎𝐒 𝐑𝐞𝐬𝐞𝐭",
-                serverMessageId: 100
-            }
-        }
+        mentions: [m.sender]
     }, { quoted: m });
 };
 
-handler.help = ['resetmod'];
+handler.help = ['resetvips'];
 handler.tags = ['owner'];
-// Puoi usare .resetmod o .clearstaff
-handler.command = /^(resetmod|clearstaff)$/i;
+handler.command = /^(resetvips|clearstaff)$/i;
 handler.group = true;
-// 🔥 SOLO L'OWNER PUÒ USARE QUESTO COMANDO 🔥
 handler.owner = true; 
 
 export default handler;
