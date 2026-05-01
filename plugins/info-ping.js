@@ -5,16 +5,16 @@ let handler = async (m, { conn }) => {
     let _uptime = process.uptime() * 1000
     let uptime = clockString(_uptime)
     
-    // Ping con precisione decimale e padding (es: 023.5)
+    // Manteniamo il formato richiesto 000.x (es: 012.4)
     let speed = (performance.now() - old).toFixed(1).padStart(5, '0')
 
     let txt = `
-Ｎ Ｅ Ｗ Ｅ Ｒ Ａ  ｜  ＳＹＳＴＥＭ
-
-◤  𝐏𝐈𝐍𝐆   ﹕ ${speed} ᴍꜱ
-◣  𝐔𝐏𝐓𝐈𝐌𝐄 ﹕ ${uptime}
-
-─── ɴᴇᴡᴇʀᴀ ᴄᴏʀᴇ ᴠ${global.versione} ───`.trim()
+*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System Status_
+───────────────
+⚡ *Speed:* ${speed} ms
+⏳ *Uptime:* ${uptime}
+───────────────
+_v${global.versione || '3.0.0'}_`.trim()
 
     await m.reply(txt)
 }
@@ -30,6 +30,6 @@ function clockString(ms) {
     let m = Math.floor(ms / 60000) % 60
     let s = Math.floor(ms / 1000) % 60
     
-    // Formato uptime compatto ed elegante
-    return `${h}ʜ  ${m.toString().padStart(2, '0')}ᴍ  ${s.toString().padStart(2, '0')}ꜱ`
+    // Formato uptime pulito senza caratteri strani
+    return `${h}h ${m}m ${s}s`
 }
