@@ -28,6 +28,7 @@ async function getProfilePic(conn, jid, loadImage) {
         return await loadImage(Buffer.from(await res.arrayBuffer()));
     } catch (e) {
         try {
+            // Immagine di fallback neutrale/scura se fallisce
             let res = await fetch('https://files.catbox.moe/pyp87f.jpg'); 
             return await loadImage(Buffer.from(await res.arrayBuffer()));
         } catch (e2) { return null; }
@@ -36,19 +37,34 @@ async function getProfilePic(conn, jid, loadImage) {
 
 async function generateTimeDashboard(conn, sender, pushName, userStats, rank, totalUsers) {
     let createCanvas, loadImage;
-    try { const canvasLib = await import('canvas'); createCanvas = canvasLib.createCanvas; loadImage = canvasLib.loadImage; } catch (e) { return null; }
+    try { 
+        const canvasLib = await import('canvas'); 
+        createCanvas = canvasLib.createCanvas; 
+        loadImage = canvasLib.loadImage; 
+    } catch (e) { return null; }
 
-    const cvs = createCanvas(800, 520); const ctx = cvs.getContext('2d');
+    const cvs = createCanvas(800, 520); 
+    const ctx = cvs.getContext('2d');
 
+    // SFONDO: Nero assoluto / Grigio scurissimo
     let bgGradient = ctx.createLinearGradient(0, 0, 800, 520);
-    bgGradient.addColorStop(0, '#040b16'); bgGradient.addColorStop(1, '#0a192f');
-    ctx.fillStyle = bgGradient; ctx.fillRect(0, 0, 800, 520);
+    bgGradient.addColorStop(0, '#050505'); 
+    bgGradient.addColorStop(1, '#111111');
+    ctx.fillStyle = bgGradient; 
+    ctx.fillRect(0, 0, 800, 520);
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)'; ctx.lineWidth = 4;
+    // Griglia impercettibile
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)'; ctx.lineWidth = 1;
     for (let i = -800; i < 800; i += 20) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + 800, 800); ctx.stroke(); }
 
-    const cardBg = '#112240'; const accentBlue = '#3b82f6'; 
-    const textMain = '#ffffff'; const textSub = '#94a3b8'; const badgeBg = 'rgba(59, 130, 246, 0.2)'; 
+    // COLORI NEW ERA
+    const cardBg = '#16161a'; 
+    const accentGrey = '#6b7280'; 
+    const textMain = '#f9fafb'; 
+    const textSub = '#9ca3af'; 
+    const badgeBg = '#27272a'; 
+    const badgeText = '#e5e7eb'; 
+    const progressColor = '#d1d5db'; 
 
     let totalSec = userStats.onlineTime || 0;
     
@@ -65,7 +81,7 @@ async function generateTimeDashboard(conn, sender, pushName, userStats, rank, to
     if (progressNextHour > 100) progressNextHour = 100;
 
     // HEADER
-    fillRoundRect(ctx, 30, 30, 740, 110, 20, cardBg);
+    fillRoundRect(ctx, 30, 30, 740, 110, 15, cardBg);
     
     let pfp = await getProfilePic(conn, sender, loadImage);
     if (pfp) {
@@ -74,49 +90,47 @@ async function generateTimeDashboard(conn, sender, pushName, userStats, rank, to
     }
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = textMain; ctx.font = 'bold 28px sans-serif'; ctx.fillText(pushName || 'Utente', 150, 75);
-    ctx.fillStyle = textSub; ctx.font = '16px sans-serif'; ctx.fillText(`@${sender.split('@')[0]} • Legam OS`, 150, 100);
-    drawPill(ctx, 150, 115, 'Tempo online questa settimana', badgeBg, accentBlue);
+    ctx.fillStyle = textMain; ctx.font = 'bold 28px sans-serif'; ctx.fillText(pushName || 'Sconosciuto', 150, 75);
+    ctx.fillStyle = textSub; ctx.font = '16px sans-serif'; ctx.fillText(`@${sender.split('@')[0]} • NEW ERA CORE`, 150, 100);
+    drawPill(ctx, 150, 115, 'Analisi Temporale', badgeBg, badgeText);
 
     const cardW = 355; const cardH = 150; const startY = 170; const padX = 60;
 
     // CARD 1: TEMPO TOTALE
-    fillRoundRect(ctx, 30, startY, cardW, cardH, 20, cardBg);
+    fillRoundRect(ctx, 30, startY, cardW, cardH, 15, cardBg);
     ctx.textAlign = 'left';
-    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('TEMPO TOTALE (GRUPPO)', padX, startY + 35);
-    
-    // 🔥 FIX FONT OROLOGIO 🔥 (Più grande, pulito e compatto)
+    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('TEMPO GLOBALE', padX, startY + 35);
     ctx.fillStyle = textMain; ctx.font = 'bold 48px sans-serif'; ctx.fillText(timeString, padX, startY + 90);
-    
-    drawPill(ctx, padX, startY + 110, `${oreCumulative}h cumulative`, badgeBg, accentBlue);
+    drawPill(ctx, padX, startY + 110, `${oreCumulative}h totali`, badgeBg, badgeText);
 
     // CARD 2: POSIZIONE
     let rightCardX = 415; let rightPadX = rightCardX + 30;
-    fillRoundRect(ctx, rightCardX, startY, cardW, cardH, 20, cardBg);
+    fillRoundRect(ctx, rightCardX, startY, cardW, cardH, 15, cardBg);
     ctx.textAlign = 'left';
-    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('POSIZIONE NEL GRUPPO', rightPadX, startY + 35);
+    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('RATING SESSIONE', rightPadX, startY + 35);
     ctx.fillStyle = textMain; ctx.font = 'bold 45px sans-serif'; ctx.fillText(`${rank}/${totalUsers}`, rightPadX, startY + 90);
-    drawPill(ctx, rightPadX, startY + 110, `Top ${topPercent}%`, badgeBg, accentBlue);
+    drawPill(ctx, rightPadX, startY + 110, `Top ${topPercent}%`, badgeBg, badgeText);
 
     // CARD 3: VERSO PROSSIMA ORA
     let bottomY = startY + cardH + 20;
-    fillRoundRect(ctx, 30, bottomY, cardW, cardH, 20, cardBg);
+    fillRoundRect(ctx, 30, bottomY, cardW, cardH, 15, cardBg);
     ctx.textAlign = 'left';
-    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('VERSO PROSSIMA ORA', padX, bottomY + 35);
+    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('PROGRESSO CICLO', padX, bottomY + 35);
     ctx.fillStyle = textMain; ctx.font = 'bold 45px sans-serif'; ctx.fillText(`${progressNextHour}%`, padX, bottomY + 90);
     
-    fillRoundRect(ctx, padX, bottomY + 115, 295, 10, 5, 'rgba(255,255,255,0.1)'); 
+    // Barra progresso neutra
+    fillRoundRect(ctx, padX, bottomY + 115, 295, 6, 3, '#333333'); 
     if (progressNextHour > 0) {
         let barWidth = (progressNextHour / 100) * 295;
-        fillRoundRect(ctx, padX, bottomY + 115, barWidth, 10, 5, accentBlue); 
+        fillRoundRect(ctx, padX, bottomY + 115, barWidth, 6, 3, progressColor); 
     }
 
     // CARD 4: UTENTI ATTIVI SETTIMANA
-    fillRoundRect(ctx, rightCardX, bottomY, cardW, cardH, 20, cardBg);
+    fillRoundRect(ctx, rightCardX, bottomY, cardW, cardH, 15, cardBg);
     ctx.textAlign = 'left';
-    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('UTENTI ATTIVI QUESTA SETTIMANA', rightPadX, bottomY + 35);
+    ctx.fillStyle = textSub; ctx.font = 'bold 14px sans-serif'; ctx.fillText('NODI ATTIVI', rightPadX, bottomY + 35);
     ctx.fillStyle = textMain; ctx.font = 'bold 45px sans-serif'; ctx.fillText(`${totalUsers}`, rightPadX, bottomY + 90);
-    drawPill(ctx, rightPadX, bottomY + 110, `Sessione settimanale`, badgeBg, accentBlue);
+    drawPill(ctx, rightPadX, bottomY + 110, `Matrice corrente`, badgeBg, badgeText);
 
     return cvs.toBuffer('image/png');
 }
@@ -129,35 +143,26 @@ let handler = async (m, { conn }) => {
     usersArray.sort((a, b) => (b[1].onlineTime || 0) - (a[1].onlineTime || 0));
 
     let totalUsers = usersArray.length;
-    if (totalUsers === 0) return m.reply(`『 😅 』 \`Nessun utente attivo in questa settimana. Invia il primo messaggio!\``);
+    if (totalUsers === 0) return;
 
-    await m.react('⏳');
     let userStats = chatData[m.sender];
     
-    if (!userStats) {
-        await m.react('❌');
-        return m.reply(`『 😅 』 \`Non hai ancora scritto questa settimana. Invia un messaggio e riprova!\``);
-    }
+    if (!userStats) return;
 
     let rank = usersArray.findIndex(u => u[0] === m.sender) + 1;
-    let pushName = m.pushName || 'Utente';
+    let pushName = m.pushName || 'Sconosciuto';
 
     let dashboardImg = await generateTimeDashboard(conn, m.sender, pushName, userStats, rank, totalUsers);
 
     if (dashboardImg) {
+        // Invio SOLO IMMAGINE, senza caption e senza contextInfo
         await conn.sendMessage(m.chat, { 
-            image: dashboardImg, 
-            caption: `『 ⏱️ 』 \`DASHBOARD SETTIMANALE\`\n\nStatistiche valide per la settimana corrente.`,
-            contextInfo: { isForwarded: true, forwardedNewsletterMessageInfo: { newsletterJid: '120363233544482011@newsletter', serverMessageId: 100, newsletterName: `⏱️ Stats Settimanali` } }
+            image: dashboardImg,
+            caption: "" 
         }, { quoted: m });
-    } else {
-        m.reply(`『 ❌ 』 \`Errore nella generazione della Dashboard grafica.\``);
     }
-    await m.react('✅');
 };
 
-handler.command = /^(time)$/i;
+handler.command = /^(time|ore|tempo)$/i;
 handler.group = true;
 export default handler;
-
-
