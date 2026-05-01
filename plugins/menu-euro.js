@@ -1,16 +1,15 @@
 const defaultMenu = {
-  before: ``.trimStart(),
-  header: 'ㅤㅤ⋆｡˚『 ╭ `MENU %category` ╯ 』˚｡⋆\n╭',
-  body: '│ ➤ 『 🪙 』 *%cmd*',
-  footer: '*╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*\n',
-  after: ``
+  before: `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Economy Matrix_\n───────────────`.trimStart(),
+  header: '\n◤  *%category*  ◣',
+  body: '🪙  *%cmd*',
+  footer: '───────────────',
+  after: `_system economy active_`
 }
 
 const handler = async (m, { conn, usedPrefix: _p }) => {
-  // Qui definiamo gli "slot" (le categorie) che il bot deve cercare
   const categorie = {
-    'euro': 'EURO',
-    'rpg': 'RPG / AVVENTURA',
+    'euro': 'ECONOMIA',
+    'rpg': 'AVVENTURA',
     'taglia': 'TAGLIE',
     'virtual': 'VIRTUALI'
   }
@@ -18,9 +17,8 @@ const handler = async (m, { conn, usedPrefix: _p }) => {
   try {
     await conn.sendPresenceUpdate('composing', m.chat)
     
-    let menuCompleto = ""
+    let menuCompleto = defaultMenu.before + '\n'
 
-    // Ciclo che riempie ogni slot se trova plugin con quel tag
     for (let tag in categorie) {
         let comandi = Object.values(global.plugins)
             .filter(plugin => !plugin.disabled && plugin.tags && plugin.tags.includes(tag))
@@ -40,28 +38,19 @@ const handler = async (m, { conn, usedPrefix: _p }) => {
         }
     }
 
+    menuCompleto += defaultMenu.after
+
    await conn.sendMessage(m.chat, {
       video: { url: './media/menu/menu4.mp4' },
       caption: menuCompleto.trim(),
       gifPlayback: true,
       gifAttribution: 2,
-      mimetype: 'video/mp4',
-      contextInfo: {
-        mentionedJid: [m.sender],
-        isForwarded: true,
-        forwardingScore: 999,
-        forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363233544482011@newsletter',
-            newsletterName: "✨.✦★彡 Menu by Giuse Ξ★✦.•",
-            serverMessageId: 143
-        }
-      }
+      mimetype: 'video/mp4'
     }, { quoted: m })
 
   } catch (e) {
     console.error(e)
-    conn.reply(m.chat, "❌ Errore nel caricamento del menu", m)
-    throw e
+    m.reply("⚠️ *ERRORE SISTEMA*")
   }
 }
 
