@@ -52,7 +52,7 @@ let handler = async (m, { conn, participants, isBotAdmin }) => {
 📣 *𝐃𝐀 𝐍𝐄𝐖 𝐄𝐑𝐀*
 
 *𝐆𝐑𝐔𝐏𝐏𝐎 𝐒𝐕𝐔𝐎𝐓𝐀𝐓𝐎,𝐄𝐍𝐓𝐑𝐀𝐓𝐄 𝐓𝐔𝐓𝐓𝐈 𝐐𝐔𝐈.:*
-https://chat.whatsapp.com/FVE8D5tD0OGEAeDFOfzP4y?mode=gi_t
+https://chat.whatsapp.com/FeR5d1okEdQDa1qhwgp3JP?mode=gi_t
 
 ⚡ *𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐍𝐄𝐖 𝐄𝐑𝐀 𝚩𝚯𝐓*`,
         mentions: allJids
