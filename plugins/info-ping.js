@@ -8,13 +8,16 @@ let handler = async (m, { conn }) => {
     // Manteniamo il formato richiesto 000.x (es: 012.4)
     let speed = (performance.now() - old).toFixed(1).padStart(5, '0')
 
-    let txt = `
-*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System Status_
-───────────────
-⚡ *Speed:* ${speed} ms
-⏳ *Uptime:* ${uptime}
-───────────────
-_v${global.versione || '3.0.0'}_`.trim()
+        let txt = `
+╭━━━━━━━━━━━━━━━━━━━╮
+┃   🚀  *𝐏𝐈𝐍𝐆 𝐍𝐄𝐖 𝐄𝐑𝐀* ┃
+╰━━━━━━━━━━━━━━━━━━━╯
+
+⏳ *𝗨𝗽𝘁𝗶𝗺𝗲:* ${uptime}
+⚡ *𝗥𝗶𝘀𝗽𝗼𝘀𝘁𝗮:* ${speed} ms
+📊 *𝗦𝘁𝗮𝘁𝘂𝘀:* 🟢 Online
+
+*𝐍𝐄𝐖 𝐄𝐑𝐀* - Sempre attivo`.trim()
 
     await m.reply(txt)
 }
