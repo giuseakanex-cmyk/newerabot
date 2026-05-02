@@ -40,8 +40,8 @@ let handler = async (m, { conn, isOwner, isAdmin }) => {
 
         // Messaggio Minimal stile New Era
         let text = `
-📦 *File Rimossi:* ${finalCount}
-─Cache e sessioni temporanee eliminate.`.trim()
+Eliminati ${finalCount} cache con successo✅.
+`.trim()
 
         await conn.sendMessage(m.chat, { text: text }, { quoted: m })
         
