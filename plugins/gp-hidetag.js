@@ -60,7 +60,7 @@ const handler = async (m, { conn, text, participants, command }) => {
     else if (text) {
       // Se è un testo normale scritto dopo il comando
       await conn.sendMessage(m.chat, {
-        text: `➻ ${text}`,
+        text: `𖠇 ${text} 𖠇`,
         mentions: users
       }, { quoted: m });
     }
