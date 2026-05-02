@@ -1,8 +1,3 @@
-
-// ==========================================
-// LEGAM OS - PROTOCOLLO NUKE & RESUSCITA BY BLOOD
-// ==========================================
-
 const handler = async (m, { conn, command, usedPrefix, isAdmin, isOwner }) => {
     const chat = global.db.data.chats[m.chat] || {}
     const user = global.db.data.users[m.sender] || {}
@@ -10,13 +5,13 @@ const handler = async (m, { conn, command, usedPrefix, isAdmin, isOwner }) => {
     // Verifica permessi: Owner, Admin del gruppo o Membro VIP (Premium)
     const isVip = user.premium && user.premiumGroup === m.chat
     if (!isAdmin && !isOwner && !isVip) {
-        return m.reply('⛔ *Accesso negato. Solo lo Staff / VIP possono eseguire questo protocollo.*')
+        return m.reply('*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System_\n───────────────\n⚠️ Accesso negato: Autorizzazione Staff/VIP richiesta.')
     }
 
-    // ☢️ PROTOCOLLO NUKEGP (Simulazione / Dominazione)
+    // ☢️ PROTOCOLLO NUKEGP (Simulazione / Override)
     if (command === 'nukegp') {
         try {
-            await m.react('☣️')
+            await m.react('☢️')
             const groupMetadata = await conn.groupMetadata(m.chat)
 
             // Salvataggio dati per il ripristino
@@ -25,11 +20,11 @@ const handler = async (m, { conn, command, usedPrefix, isAdmin, isOwner }) => {
             global.db.data.chats[m.chat] = chat
 
             // 1. Rinnovo Estetico (Nome)
-            let newName = `${groupMetadata.subject} | 𝐒𝐕𝐓 𝚩𝐘 𝐆𝐈𝐔𝐒𝚵ꨄ`.substring(0, 25)
+            let newName = `${groupMetadata.subject} | 𝐎𝐕𝐄𝐑𝐑𝐈𝐃𝐄`.substring(0, 25)
             await conn.groupUpdateSubject(m.chat, newName).catch(() => {})
 
             // 2. Aggiornamento Descrizione
-            await conn.groupUpdateDescription(m.chat, "𝐋𝚵𝐆𝚬𝐌 𝐎𝐒 𝐃𝐎𝐌𝐈𝐍𝐀 𝐒𝐔 𝐐𝐔𝚬𝐒𝐓𝐎 𝐓𝚬𝐑𝐑𝐈𝐓𝐎𝐑𝐈𝐎 🛡️").catch(() => {})
+            await conn.groupUpdateDescription(m.chat, "𝐍𝐄𝐖 𝐄𝐑𝐀 𝐒𝐘𝐒𝐓𝐄𝐌 𝐎𝐕𝐄𝐑𝐑𝐈𝐃𝐄\n\nQuesto gruppo è ora sotto il controllo del protocollo di sicurezza.").catch(() => {})
 
             // 3. Blocco Comunicazioni (Solo Admin)
             await conn.groupSettingUpdate(m.chat, 'announcement').catch(() => {})
@@ -39,17 +34,15 @@ const handler = async (m, { conn, command, usedPrefix, isAdmin, isOwner }) => {
             let link = `https://chat.whatsapp.com/${code}`
             const participants = groupMetadata.participants.map(u => u.id)
 
-            let nukeMsg = `
-╭──────────────────────╮
-│  ☣️  *𝐆𝐑𝐔𝐏𝐏𝐎 𝐒𝐕𝐔𝐎𝐓𝐀𝐓𝐎* ☣️  │
-╰──────────────────────╯
+            let nukeMsg = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Protocollo Override_
+───────────────
+⚠️ *ATTENZIONE*
+Il sistema ha neutralizzato il gruppo.
 
-📣 *𝐃𝐀 𝐿𝛴𝐺𝛬𝑀 𝚩𝚯𝐓*
-
-*𝐆𝐑𝐔𝐏𝐏𝐎 𝐒𝐕𝐔𝐎𝐓𝐀𝐓𝐎, 𝐄𝐍𝐓𝐑𝐀𝐓𝐄 𝐓𝐔𝐓𝐓𝐈 𝐐𝐔𝐈:*
+• *Punto di Ritrovo Temporaneo:*
 ${link}
-
-⚡ *𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐿𝛴𝐺𝛬𝑀 𝚩𝚯𝐓*`.trim()
+───────────────
+_system override active_`.trim()
 
             await conn.sendMessage(m.chat, {
                 text: nukeMsg,
@@ -58,16 +51,16 @@ ${link}
 
         } catch (e) {
             console.error(e)
-            m.reply("❌ Errore durante l'esecuzione del protocollo.")
+            m.reply("⚠️ *ERRORE SISTEMA:*\nImpossibile eseguire il protocollo Override.")
         }
     }
 
-    // ✨ PROTOCOLLO RESUSCITA
+    // ✨ PROTOCOLLO RESUSCITA (Restore)
     if (command === 'resuscita') {
-        if (!chat.oldName) return m.reply("⚠️ *Nessun dato di ripristino trovato nel database Legam OS.*")
+        if (!chat.oldName) return m.reply("*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System Error_\n───────────────\n⚠️ Nessun punto di ripristino trovato nel database.")
 
         try {
-            await m.react('🕊️')
+            await m.react('🔄')
             
             // 1. Ripristino Nome
             await conn.groupUpdateSubject(m.chat, chat.oldName).catch(() => {})
@@ -78,15 +71,13 @@ ${link}
             // 3. Sblocco Comunicazioni
             await conn.groupSettingUpdate(m.chat, 'not_announcement').catch(() => {})
 
-            let resMsg = `
-✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦
-✨ *𝐑𝐈𝐏𝐑𝐈𝐒𝐓𝐈𝐍𝐎 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐀𝐓𝐎* ✨
-✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦
-
-✅ _Nome e descrizione ripristinati._
-🔓 _Il gruppo è nuovamente aperto._
-
-🛡️ *𝐋𝐞𝐠𝐚𝐦 𝐎𝐒 𝐒𝐞𝐜𝐮𝐫𝐢𝐭𝐲*`.trim()
+            let resMsg = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _System Restore_
+───────────────
+✅ *Ripristino Completato*
+• Parametri originali ricaricati.
+• Restrizioni di comunicazione rimosse.
+───────────────
+_system normalized_`.trim()
 
             await conn.sendMessage(m.chat, { text: resMsg })
             
@@ -95,7 +86,7 @@ ${link}
             delete chat.oldDesc
             
         } catch (e) {
-            m.reply("❌ Errore durante la resurrezione.")
+            m.reply("⚠️ *ERRORE SISTEMA:*\nImpossibile ripristinare i dati del gruppo.")
         }
     }
 }
@@ -108,5 +99,3 @@ handler.group = true
 handler.botAdmin = true 
 
 export default handler
-
-
