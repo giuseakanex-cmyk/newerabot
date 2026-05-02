@@ -67,7 +67,7 @@ handler.before = async function (m) {
     userAct.msgCount += 1;
     if (userAct.msgCount % 100 === 0) {
         global.db.data.users[m.sender].euro += 200; 
-        let msgReward = `『 🎉 』 @${m.sender.split('@')[0]}, hai inviato altri 100 messaggi: +200€ nel tuo caveau!`;
+        let msgReward = `🎉 @${m.sender.split('@')[0]}, hai inviato altri 100 messaggi: +200€!`;
         await this.sendMessage(m.chat, { text: msgReward, mentions: [m.sender] });
     }
 
@@ -76,7 +76,7 @@ handler.before = async function (m) {
         global.db.data.users[m.sender].euro += 300;
         userAct.timeForReward = 0; 
         let oreTotali = Math.floor(userAct.onlineTime / 3600) || 1;
-        let txtOra = `『 🏆 』 @${m.sender.split('@')[0]}, hai raggiunto ${oreTotali} ore di attività: +300€ accreditati!`;
+        let txtOra = `🕦 @${m.sender.split('@')[0]}, hai raggiunto ${oreTotali} ore di attività: +300€!`;
         await this.sendMessage(m.chat, { text: txtOra, mentions: [m.sender] });
     }
 };
