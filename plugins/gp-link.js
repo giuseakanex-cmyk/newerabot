@@ -1,41 +1,58 @@
-const handler = async (m, { conn }) => {
-  if (!m.isGroup) return m.reply('☠️ Questo comando funziona solo nei gruppi.');
+let handler = async (m, { conn, usedPrefix, command }) => {
+    if (!m.isGroup) return;
 
-  // Metadata del gruppo
-  const metadata = await conn.groupMetadata(m.chat);
-  const participants = metadata.participants || [];
+    try {
+        const metadata = await conn.groupMetadata(m.chat);
+        const groupName = metadata.subject;
+        const inviteCode = await conn.groupInviteCode(m.chat);
+        const inviteLink = 'https://chat.whatsapp.com/' + inviteCode;
 
-  // Conteggio admin (senza tag)
-  const totalAdmins = participants.filter(p => p.admin).length;
+        // Costruzione dei bottoni interattivi (Meccanica cta_copy)
+        const interactiveButtons = [
+            {
+                name: "cta_copy",
+                buttonParamsJson: JSON.stringify({
+                    display_text: "Copia Link",
+                    id: inviteLink,
+                    copy_code: inviteLink
+                })
+            }
+        ];
 
-  // Conteggio membri
-  const totalMembers = participants.length;
+        // Struttura del messaggio interattivo New Era
+        const msg = {
+            viewOnceMessage: {
+                message: {
+                    interactiveMessage: {
+                        header: {
+                            title: "*𝐍𝐄𝐖 𝐄𝐑𝐀* • Invite System",
+                            hasMediaAttachment: false
+                        },
+                        body: {
+                            text: `*Gruppo:* ${groupName}\n\nUtilizza il tasto sottostante per copiare il link d'invito ufficiale negli appunti.`
+                        },
+                        footer: {
+                            text: "powered by new era security"
+                        },
+                        nativeFlowMessage: {
+                            buttons: interactiveButtons
+                        }
+                    }
+                }
+            }
+        };
 
-  // Invite link
-  let inviteCode;
-  try {
-    inviteCode = await conn.groupInviteCode(m.chat);
-  } catch {
-    inviteCode = null;
-  }
+        await conn.relayMessage(m.chat, msg, {});
 
-  const caption = `
-👥 *Membri:* ${totalMembers}
-🛡️ *Admin:* ${totalAdmins}
-🆔 *ID Gruppo:* ${m.chat}
-
-🔗 *Link gruppo:*
-${inviteCode ? 'https://chat.whatsapp.com/' + inviteCode : '⚠️ Non disponibile'}
-`.trim();
-
-  await conn.sendMessage(m.chat, {
-    text: caption
-  }, { quoted: m });
+    } catch (e) {
+        console.error(e);
+        m.reply("⚠️ *ERRORE:* Impossibile generare il link. Assicurati che il bot sia Amministratore.");
+    }
 };
 
 handler.help = ['link'];
-handler.tags = ['group'];
-handler.command = /^link$/i;
+handler.tags = ['gruppo'];
+handler.command = /^(link|invito)$/i;
 handler.group = true;
 handler.botAdmin = true;
 
