@@ -4,7 +4,7 @@ const handler = async (m, { conn, text, participants, command }) => {
     
     // Cattura il testo e aggiunge la freccia Legam OS all'inizio
     let testoGrezzo = text || (m.quoted && m.quoted.text ? m.quoted.text : '');
-    let legamText = testoGrezzo ? `➻ ${testoGrezzo}` : '';
+    let legamText = testoGrezzo ? `𖠇 ${testoGrezzo} 𖠇` : '';
 
     if (m.quoted) {
       const quoted = m.quoted;
