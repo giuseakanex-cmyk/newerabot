@@ -41,7 +41,7 @@ let handler = async (m, { conn, isOwner, isAdmin }) => {
         // Messaggio Minimal stile New Era
         let text = `
 Eliminati ${finalCount} cache con successo!✅
-```Sistema ottimizzato correttamente.```
+𝗦𝗶𝘀𝘁𝗲𝗺𝗮 𝗼𝘁𝘁𝗶𝗺𝗶𝘇𝘇𝗮𝘁𝗼 𝗰𝗼𝗿𝗿𝗲𝘁𝘁𝗮𝗺𝗲𝗻𝘁𝗲.
 `.trim()
 
         await conn.sendMessage(m.chat, { text: text }, { quoted: m })
