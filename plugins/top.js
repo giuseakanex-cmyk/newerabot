@@ -1,11 +1,3 @@
-
-// ==========================================
-// LEGAM OS - DAILY REPORT VIP (ESTETICA PURA)
-// ==========================================
-
-const legamHeader = `✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦`;
-const legamFooter = `✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦ ⁺ . ⁺ ✦\n. . ✦  .  ⁺  .  ✦  . .`;
-
 function formattaData() {
     const mesi = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
     let oggi = new Date();
@@ -18,7 +10,13 @@ let handler = async (m, { conn }) => {
 
     // Se non c'è nulla registrato
     if (!dati || dati.totali === 0) {
-        let emptyMsg = `${legamHeader}\n· 📊 𝐃𝐀𝐈𝐋𝐘 𝐑𝐄𝐏𝐎𝐑𝐓 📊 ·\n${legamHeader}\n\n『 📅 』 𝐃𝐚𝐭𝐚: ${formattaData()}\n\n· _Nessuna statistica registrata oggi._\n\n${legamFooter}`;
+        let emptyMsg = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Daily Report_
+───────────────
+📅 *Data:* ${formattaData()}
+
+⚠️ _Nessuna attività registrata oggi nel sistema._
+───────────────
+_system standing by_`.trim();
         return m.reply(emptyMsg);
     }
 
@@ -29,15 +27,17 @@ let handler = async (m, { conn }) => {
     let numUtenti = Object.keys(dati.utenti).length;
     let numMedia = dati.media || 0;
 
-    let report = `${legamHeader}\n· 📊 𝐃𝐀𝐈𝐋𝐘 𝐑𝐄𝐏𝐎𝐑𝐓 📊 ·\n${legamHeader}\n\n`;
-    report += `『 📅 』 𝐃𝐚𝐭𝐚: ${formattaData()}\n\n`;
+    let report = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Daily Report_
+───────────────
+📅 *Data:* ${formattaData()}
 
-    report += `『 📈 』 𝐒𝐓𝐀𝐓𝐈𝐒𝐓𝐈𝐂𝐇𝐄\n`;
-    report += `· 💬 Messaggi: ${dati.totali}\n`;
-    report += `· 👥 Utenti Attivi: ${numUtenti}\n`;
-    report += `· 📸 Media & Sticker: ${numMedia}\n\n`;
+*📊 STATISTICHE GLOBALI*
+• Messaggi totali: ${dati.totali}
+• Nodi attivi: ${numUtenti}
+• Media & Documenti: ${numMedia}
 
-    report += `『 🏆 』 𝐓𝐎𝐏 𝐔𝐒𝐄𝐑𝐒\n\n`;
+*🏆 TOP 5 UTENTI*
+`;
 
     const medaglie = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
     let mentions = [];
@@ -45,12 +45,12 @@ let handler = async (m, { conn }) => {
     classifica.forEach(([jid, u], i) => {
         mentions.push(jid);
         report += `${medaglie[i]} @${jid.split('@')[0]}\n`;
-        report += `· 💬 ${u.conteggio} messaggi\n\n`;
+        report += `   > 💬 ${u.conteggio} messaggi\n\n`;
     });
 
-    report += `${legamFooter}`;
+    report += `───────────────\n_database queried_`;
 
-    await conn.sendMessage(chatId, { text: report, mentions: mentions }, { quoted: m });
+    await conn.sendMessage(chatId, { text: report.trim(), mentions: mentions }, { quoted: m });
 };
 
 // ==========================================
@@ -116,18 +116,20 @@ setInterval(async () => {
             let numUtenti = Object.keys(dati.utenti).length;
             let numMedia = dati.media || 0;
 
-            let reportFinal = `${legamHeader}\n· 🌙 𝐌𝐈𝐃𝐍𝐈𝐆𝐇𝐓 𝐑𝐄𝐏𝐎𝐑𝐓 🌙 ·\n${legamHeader}\n\n`;
-            reportFinal += `『 📅 』 𝐃𝐚𝐭𝐚: ${formattaData()}\n\n`;
+            let reportFinal = `*𝐍𝐄𝐖 𝐄𝐑𝐀* • _Midnight Report_
+───────────────
+📅 *Data:* ${formattaData()}
 
-            reportFinal += `『 📈 』 𝐑𝐄𝐒𝐎𝐂𝐎𝐍𝐓𝐎 𝐅𝐈𝐍𝐀𝐋𝐄\n`;
-            reportFinal += `· 💬 Messaggi: ${dati.totali}\n`;
-            reportFinal += `· 👥 Utenti Attivi: ${numUtenti}\n`;
-            reportFinal += `· 📸 Media & Sticker: ${numMedia}\n\n`;
+*📈 RESOCONTO FINALE*
+• Messaggi totali: ${dati.totali}
+• Nodi attivi: ${numUtenti}
+• Media & Documenti: ${numMedia}
 
-            reportFinal += `『 🏆 』 𝐏𝐎𝐃𝐈𝐎 𝐄 𝐏𝐑𝐄𝐌𝐈\n\n`;
+*👑 PODIO & RICOMPENSE*
+`;
 
             const medaglie = ['🥇', '🥈', '🥉'];
-            const premi = [2000, 1000, 500]; // Premi in Euro aumentati per Legam OS
+            const premi = [2000, 1000, 500]; // Premi in Euro intatti
             let mentions = [];
 
             classifica.forEach(([jid, u], i) => {
@@ -139,17 +141,16 @@ setInterval(async () => {
                 global.db.data.users[jid].euro = (global.db.data.users[jid].euro || 0) + premio;
 
                 reportFinal += `${medaglie[i]} @${jid.split('@')[0]}\n`;
-                reportFinal += `· 💬 ${u.conteggio} messaggi\n`;
-                reportFinal += `· 💰 Vinto: +${premio}€\n\n`;
+                reportFinal += `   > 💬 ${u.conteggio} messaggi\n`;
+                reportFinal += `   > 💰 Vinto: +${premio}€\n\n`;
             });
 
-            reportFinal += `_Statistiche azzerate. Nuova gara iniziata!_\n\n`;
-            reportFinal += `${legamFooter}`;
+            reportFinal += `_Statistiche azzerate. Nuovo ciclo avviato._\n───────────────\n_system reset completed_`;
 
             try {
                 if (global.conn) {
                     await global.conn.sendMessage(gid, { 
-                        text: reportFinal, 
+                        text: reportFinal.trim(), 
                         mentions: mentions 
                     });
                 }
@@ -177,6 +178,3 @@ handler.command = /^(resoconto|daily)$/i;
 handler.group = true;
 
 export default handler;
-
-
-
